@@ -177,6 +177,8 @@ class TaskController extends Controller
      */
     public function store()
     {
+        // Validate the task data
+
         $validated = request()->validate([
 
             'title' => 'required|string|max:255',
@@ -218,6 +220,13 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
+        // Check whether the task belongs to the logged-in user
+
+        if ($task->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+
         return view(
             'tasks.edit',
             compact('task')
@@ -232,6 +241,15 @@ class TaskController extends Controller
         Request $request,
         Task $task
     ) {
+
+        // Check whether the task belongs to the logged-in user
+
+        if ($task->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+
+        // Validate the task data
 
         $validated = $request->validate([
 
@@ -264,6 +282,15 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        // Check whether the task belongs to the logged-in user
+
+        if ($task->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+
+        // Delete the task
+
         $task->delete();
 
 
@@ -280,6 +307,15 @@ class TaskController extends Controller
      */
     public function complete(Task $task)
     {
+        // Check whether the task belongs to the logged-in user
+
+        if ($task->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+
+        // Mark the task as completed
+
         $task->update([
             'status' => 'completed',
         ]);
