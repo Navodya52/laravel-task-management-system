@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -47,7 +48,20 @@ Route::patch('/tasks/{task}/complete', [TaskController::class, 'complete'])
         ProfileController::class,
         'destroy'
     ])->name('profile.destroy');
+    
+    Route::middleware('auth')->group(function () {
+    Route::get('/categories', [CategoryController::class, 'index'])
+        ->name('categories.index');
 
+    Route::post('/categories', [CategoryController::class, 'store'])
+        ->name('categories.store');
+
+    Route::put('/categories/{category}', [CategoryController::class, 'update'])
+        ->name('categories.update');
+
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
+        ->name('categories.destroy');
+});
 });
 
 require __DIR__.'/auth.php';
