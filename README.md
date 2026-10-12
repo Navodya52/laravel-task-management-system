@@ -87,23 +87,27 @@ The project was developed to practice Laravel web development, database integrat
 - Automated test execution using GitHub Actions.
 - Workflow triggered by pushes and pull requests targeting the `main` branch.
 
+
 ## Screenshots
 
-Screenshots of the application's main interfaces can be added below.
+### Light Mode
 
-### Task Dashboard
+The application dashboard in light mode.
 
-![Task Dashboard](screenshots/dashboard.png)
+![Task Management Dashboard - Light Mode](screenshots/light_mode.png)
+
+### Dark Mode
+
+The application dashboard in dark mode.
+
+![Task Management Dashboard - Dark Mode](screenshots/dark_mode.png)
 
 ### Category Management
 
-![Category Management](screenshots/categories.png)
+Manage task categories through the category management interface.
 
-### Responsive Interface
+![Category Management](screenshots/manage_categories.png)
 
-![Responsive Interface](screenshots/mobile-view.png)
-
-> **Note:** Make sure these image filenames match the actual files in your `screenshots/` directory. Update the paths above if your filenames are different.
 
 ## Technology Stack
 
