@@ -16,6 +16,17 @@ A web-based task management application built with Laravel to help users organiz
 - Dark mode and light mode
 - User-specific task management
 
+## 📸 Screenshots
+
+### ☀️ Light Mode Dashboard
+![Light Mode Dashboard](screenshots/light_mode.png)
+
+### 🌙 Dark Mode Dashboard
+![Dark Mode Dashboard](screenshots/dark_mode.png)
+
+### 💜 Manage Categories
+![Manage Categories](screenshots/manage_categories.png)
+
 ## 🛠️ Technologies Used
 
 - PHP
