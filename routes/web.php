@@ -1,10 +1,10 @@
 
 <?php
 
-use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CategoryController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,46 +12,26 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
+// Home page
 Route::get('/', function () {
-    return redirect()->route('tasks.index');
+    return view('welcome');
 });
 
-// All task and category pages require authentication.
+// Authenticated user routes
 Route::middleware('auth')->group(function () {
 
-    // Task management
-    Route::get('/tasks', [TaskController::class, 'index'])
-        ->name('tasks.index');
+    // Dashboard redirects to the task management dashboard
+    Route::get('/dashboard', function () {
+        return redirect()->route('tasks.index');
+    })->name('dashboard');
 
-    Route::post('/tasks', [TaskController::class, 'store'])
-        ->name('tasks.store');
+    // Task management routes
+    Route::resource('tasks', TaskController::class);
 
-    Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])
-        ->name('tasks.edit');
+    // Category management routes
+    Route::resource('categories', CategoryController::class);
 
-    Route::put('/tasks/{task}', [TaskController::class, 'update'])
-        ->name('tasks.update');
-
-    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])
-        ->name('tasks.destroy');
-
-    Route::post('/tasks/{task}/complete', [TaskController::class, 'complete'])
-        ->name('tasks.complete');
-
-    // Category management
-    Route::get('/categories', [CategoryController::class, 'index'])
-        ->name('categories.index');
-
-    Route::post('/categories', [CategoryController::class, 'store'])
-        ->name('categories.store');
-
-    Route::put('/categories/{category}', [CategoryController::class, 'update'])
-        ->name('categories.update');
-
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
-        ->name('categories.destroy');
-
-    // Profile management
+    // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
@@ -60,8 +40,7 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
-
 });
 
-// Laravel Breeze authentication routes
+// Authentication routes (Login, Register, Logout, etc.)
 require __DIR__.'/auth.php';
