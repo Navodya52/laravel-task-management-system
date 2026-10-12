@@ -6,32 +6,30 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
 // Home page
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Authenticated user routes
+// Authenticated routes
 Route::middleware('auth')->group(function () {
 
-    // Dashboard redirects to the task management dashboard
+    // Dashboard
     Route::get('/dashboard', function () {
         return redirect()->route('tasks.index');
     })->name('dashboard');
 
-    // Task management routes
+    // Task completion route - IMPORTANT
+    Route::post('/tasks/{task}/complete', [TaskController::class, 'complete'])
+        ->name('tasks.complete');
+
+    // Task management
     Route::resource('tasks', TaskController::class);
 
-    // Category management routes
+    // Category management
     Route::resource('categories', CategoryController::class);
 
-    // Profile routes
+    // Profile management
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
@@ -42,5 +40,5 @@ Route::middleware('auth')->group(function () {
         ->name('profile.destroy');
 });
 
-// Authentication routes (Login, Register, Logout, etc.)
+// Authentication routes
 require __DIR__.'/auth.php';
