@@ -1,881 +1,744 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Management System</title>
 
+    
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-    {{-- Bootstrap CSS --}}
+    body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f8f5ff;
+        color: #30234a;
+    }
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    
+    .navbar {
+        background: linear-gradient(135deg, #ec4899, #7c3aed);
+        color: white;
+        padding: 18px 6%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        box-shadow: 0 4px 20px rgba(76, 29, 149, 0.25);
+    }
+
+
+    .navbar h2 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .navbar a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 32px auto;
+        padding: 0 24px;
+    }
+
+    .welcome {
+        margin-bottom: 28px;
+    }
+
+    .welcome h1 {
+        margin-bottom: 8px;
+        font-size: 32px;
+        color: #951d83;
+        font-weight: 750;
+    }
+
+    .welcome p {
+        color: #786b91;
+        margin-top: 0;
+        font-size: 15px;
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .stat-card,
+    .panel {
+        background: #ffffff;
+        padding: 24px;
+        border: 1px solid #eee6ff;
+        border-radius: 18px;
+        box-shadow: 0 8px 25px rgba(91, 33, 182, 0.07);
+    }
+
+    .stat-card {
+        border-top: 4px solid #8b5cf6;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px rgba(91, 33, 182, 0.12);
+    }
+
+    .stat-card p {
+        color: #786b91;
+        margin: 0 0 12px;
+        font-size: 15px;
+    }
+
+    .stat-card h2 {
+        margin: 0;
+        font-size: 32px;
+        color: #6d28d9;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 350px minmax(0, 1fr);
+        gap: 24px;
+        align-items: start;
+    }
+
+    .panel h2 {
+        font-size: 21px;
+        margin-top: 0;
+        margin-bottom: 22px;
+        color: #4c1d95;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #493765;
+    }
+
+    input,
+    textarea,
+    select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #e2d6f8;
+        border-radius: 10px;
+        background: #fdfbff;
+        font-family: inherit;
+        font-size: 14px;
+        color: #30234a;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: #8b5cf6;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.13);
+        background: #ffffff;
+    }
+
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .btn {
+        display: inline-block;
+        border: none;
+        border-radius: 9px;
+        padding: 11px 16px;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 650;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #7c3aed, #6d28d9);
+        color: white;
+        box-shadow: 0 4px 10px rgba(109, 40, 217, 0.18);
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #6d28d9, #5b21b6);
+        transform: translateY(-1px);
+    }
+
+    .btn-success {
+        background: #ede9fe;
+        color: #5b21b6;
+    }
+
+    .btn-success:hover {
+        background: #ddd6fe;
+    }
+
+    .btn-danger {
+        background: #fce7f3;
+        color: #be185d;
+    }
+
+    .btn-danger:hover {
+        background: #fbcfe8;
+    }
+
+    .btn-secondary {
+        background: #f1ebfc;
+        color: #5b21b6;
+    }
+
+    .btn-secondary:hover {
+        background: #e9ddff;
+    }
+
+    .full-width {
+        width: 100%;
+        padding: 13px;
+        font-size: 14px;
+    }
+
+    .alert {
+        padding: 15px 18px;
+        border-radius: 11px;
+        margin-bottom: 20px;
+    }
+
+    .alert-success {
+        background: #ede9fe;
+        color: #5b21b6;
+        border: 1px solid #ddd6fe;
+    }
+
+    .alert-error {
+        background: #fce7f3;
+        color: #9d174d;
+        border: 1px solid #fbcfe8;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .filter-buttons {
+        display: flex;
+        gap: 9px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .task-card {
+        background: #ffffff;
+        border: 1px solid #eee6ff;
+        border-radius: 13px;
+        padding: 19px;
+        margin-bottom: 15px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .task-card:hover {
+        border-color: #d8b4fe;
+        box-shadow: 0 5px 16px rgba(91, 33, 182, 0.06);
+    }
+
+    .task-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .task-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #3b2460;
+        margin: 0 0 8px;
+        overflow-wrap: anywhere;
+    }
+
+    .task-description {
+        color: #786b91;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .task-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 14px 0;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #f1ebfc;
+        color: #5b21b6;
+    }
+
+    .priority-high {
+        background: #fce7f3;
+        color: #be185d;
+    }
+
+    .priority-medium {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .priority-low {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-completed {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .task-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+    }
+
+    .task-actions form {
+        margin: 0;
+    }
+
+    .empty-state {
+        padding: 35px 15px;
+        text-align: center;
+        color: #786b91;
+    }
+
+    .pagination {
+        margin-top: 20px;
+    }
+
+    .pagination nav {
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination a,
+    .pagination span {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 2px;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+    .pagination a {
+        color: #6d28d9;
+        background: #f1ebfc;
+    }
+
+    .pagination span {
+        color: #786b91;
+    }
+
+    .error-text {
+        color: #be185d;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    hr {
+        border: 0;
+        border-top: 1px solid #eee6ff;
+    }
+
+    @media (max-width: 900px) {
+        .stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 520px) {
+        .container {
+            padding: 0 12px;
+            margin-top: 20px;
+        }
+
+        .stats {
+            gap: 10px;
+        }
+
+        .stat-card,
+        .panel {
+            padding: 16px;
+        }
+
+        .filter-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .task-top {
+            flex-direction: column;
+        }
+
+        .welcome h1 {
+            font-size: 26px;
+        }
+    }
+</style>
 
 </head>
 
+<body>
 
-<body class="bg-light">
+    <header class="navbar">
+        <h2>Task Manager</h2>
 
+        <div>
+            @auth
+                <span>Welcome, {{ auth()->user()->name }}</span>
+                &nbsp; | &nbsp;
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    Logout
+                </a>
 
-<div class="container py-5">
+                <form id="logout-form" action="{{ route('logout') }}"
+                      method="POST" style="display:none;">
+                    @csrf
+                </form>
+            @endauth
+        </div>
+    </header>
 
+    <main class="container">
 
-    {{-- Page Header --}}
+        <section class="welcome">
+            <h1>My Dashboard</h1>
+            <p>Organize your work, manage your tasks, and track your progress.</p>
+        </section>
 
-    <div class="mb-4">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
 
-        <h1 class="fw-bold mb-1">
-            Task Management System
-        </h1>
+        @if ($errors->any())
+            <div class="alert alert-error">
+                <strong>Please check the following errors:</strong>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <p class="text-muted mb-0">
-            Manage your tasks efficiently
-        </p>
-
-    </div>
-
-
-    {{-- Dashboard Statistics --}}
-
-    <div class="row g-3 mb-4">
-
-
-        {{-- Total Tasks --}}
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm border-0 h-100">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <p class="text-muted mb-1">
-                                Total Tasks
-                            </p>
-
-                            <h2 class="fw-bold mb-0">
-                                {{ $totalTasks }}
-                            </h2>
-
-                        </div>
-
-                        <div class="fs-1">
-                            📋
-                        </div>
-
-                    </div>
-
-                </div>
-
+        <section class="stats">
+            <div class="stat-card">
+                <p>Total Tasks</p>
+                <h2>{{ $totalTasks }}</h2>
             </div>
 
-        </div>
-
-
-        {{-- Pending Tasks --}}
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm border-0 h-100">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <p class="text-muted mb-1">
-                                Pending
-                            </p>
-
-                            <h2 class="fw-bold mb-0 text-warning">
-                                {{ $pendingTasks }}
-                            </h2>
-
-                        </div>
-
-                        <div class="fs-1">
-                            ⏳
-                        </div>
-
-                    </div>
-
-                </div>
-
+            <div class="stat-card">
+                <p>Pending Tasks</p>
+                <h2>{{ $pendingTasks }}</h2>
             </div>
 
-        </div>
-
-
-        {{-- Completed Tasks --}}
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm border-0 h-100">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <p class="text-muted mb-1">
-                                Completed
-                            </p>
-
-                            <h2 class="fw-bold mb-0 text-success">
-                                {{ $completedTasks }}
-                            </h2>
-
-                        </div>
-
-                        <div class="fs-1">
-                            ✅
-                        </div>
-
-                    </div>
-
-                </div>
-
+            <div class="stat-card">
+                <p>Completed Tasks</p>
+                <h2>{{ $completedTasks }}</h2>
             </div>
 
-        </div>
-
-
-        {{-- High Priority Tasks --}}
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm border-0 h-100">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between align-items-center">
-
-                        <div>
-
-                            <p class="text-muted mb-1">
-                                High Priority
-                            </p>
-
-                            <h2 class="fw-bold mb-0 text-danger">
-                                {{ $highPriorityTasks }}
-                            </h2>
-
-                        </div>
-
-                        <div class="fs-1">
-                            🔴
-                        </div>
-
-                    </div>
-
-                </div>
-
+            <div class="stat-card">
+                <p>High Priority</p>
+                <h2>{{ $highPriorityTasks }}</h2>
             </div>
+        </section>
 
-        </div>
+        <div class="content-grid">
 
+            <!-- Create Task Form -->
+            <section class="panel">
+                <h2>+ Add New Task</h2>
 
-    </div>
+                <form action="{{ route('tasks.store') }}" method="POST">
+                    @csrf
 
-
-    {{-- Success Message --}}
-
-    @if (session('success'))
-
-        <div class="alert alert-success alert-dismissible fade show">
-
-            {{ session('success') }}
-
-            <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="alert"
-            ></button>
-
-        </div>
-
-    @endif
-
-
-    {{-- Validation Errors --}}
-
-    @if ($errors->any())
-
-        <div class="alert alert-danger">
-
-            <strong>Please fix the following errors:</strong>
-
-            <ul class="mb-0 mt-2">
-
-                @foreach ($errors->all() as $error)
-
-                    <li>
-                        {{ $error }}
-                    </li>
-
-                @endforeach
-
-            </ul>
-
-        </div>
-
-    @endif
-
-
-    {{-- Create New Task --}}
-
-    <div class="card shadow-sm border-0 mb-4">
-
-
-        <div class="card-header bg-primary text-white">
-
-            <h5 class="mb-0">
-                Create New Task
-            </h5>
-
-        </div>
-
-
-        <div class="card-body">
-
-
-            <form
-                action="{{ route('tasks.store') }}"
-                method="POST"
-            >
-
-                @csrf
-
-
-                <div class="row">
-
-
-                    {{-- Task Title --}}
-
-                    <div class="col-md-6 mb-3">
-
-                        <label class="form-label fw-semibold">
-                            Task Title
-                        </label>
-
+                    <div class="form-group">
+                        <label for="title">Task Title *</label>
                         <input
                             type="text"
                             name="title"
-                            class="form-control"
-                            placeholder="Enter task title"
+                            id="title"
                             value="{{ old('title') }}"
+                            placeholder="Enter task title"
+                            maxlength="255"
+                            required
                         >
-
                     </div>
 
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea
+                            name="description"
+                            id="description"
+                            placeholder="Describe your task..."
+                        >{{ old('description') }}</textarea>
+                    </div>
 
-                    {{-- Priority --}}
+                    <div class="form-group">
+                        <label for="category_id">Category</label>
 
-                    <div class="col-md-3 mb-3">
+                        <select name="category_id" id="category_id">
+                            <option value="">Select Category (Optional)</option>
 
-                        <label class="form-label fw-semibold">
-                            Priority
-                        </label>
+                            @foreach ($categories as $category)
+                                <option
+                                    value="{{ $category->id }}"
+                                    {{ old('category_id') == $category->id ? 'selected' : '' }}
+                                >
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                        <select
-                            name="priority"
-                            class="form-select"
-                        >
+                    <div class="form-group">
+                        <label for="priority">Priority *</label>
 
-                            <option value="low">
+                        <select name="priority" id="priority" required>
+                            <option value="low"
+                                {{ old('priority', 'medium') == 'low' ? 'selected' : '' }}>
                                 Low
                             </option>
 
-                            <option
-                                value="medium"
-                                {{ old('priority', 'medium') == 'medium' ? 'selected' : '' }}
-                            >
+                            <option value="medium"
+                                {{ old('priority', 'medium') == 'medium' ? 'selected' : '' }}>
                                 Medium
                             </option>
 
-                            <option value="high">
+                            <option value="high"
+                                {{ old('priority') == 'high' ? 'selected' : '' }}>
                                 High
                             </option>
-
                         </select>
-
                     </div>
 
-
-                    {{-- Due Date --}}
-
-                    <div class="col-md-3 mb-3">
-
-                        <label class="form-label fw-semibold">
-                            Due Date
-                        </label>
-
+                    <div class="form-group">
+                        <label for="due_date">Due Date</label>
                         <input
                             type="date"
                             name="due_date"
-                            class="form-control"
+                            id="due_date"
                             value="{{ old('due_date') }}"
+                            min="{{ date('Y-m-d') }}"
                         >
-
                     </div>
 
+                    <button type="submit" class="btn btn-primary full-width">
+                        Add Task
+                    </button>
+                </form>
+            </section>
 
-                    {{-- Description --}}
+            <!-- Task List -->
+            <section class="panel">
+                <h2>My Tasks</h2>
 
-                    <div class="col-12 mb-3">
-
-                        <label class="form-label fw-semibold">
-                            Description
-                        </label>
-
-                        <textarea
-                            name="description"
-                            class="form-control"
-                            rows="3"
-                            placeholder="Enter task description"
-                        >{{ old('description') }}</textarea>
-
-                    </div>
-
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                >
-                    + Create Task
-                </button>
-
-
-            </form>
-
-
-        </div>
-
-
-    </div>
-
-
-    {{-- Search & Filter --}}
-
-    <div class="card shadow-sm border-0 mb-4">
-
-
-        <div class="card-header bg-white">
-
-            <h5 class="mb-0">
-                Search, Filter & Sort
-            </h5>
-
-        </div>
-
-
-        <div class="card-body">
-
-
-            <form
-                action="{{ route('tasks.index') }}"
-                method="GET"
-            >
-
-
-                <div class="row align-items-end">
-
-
-                    {{-- Search --}}
-
-                    <div class="col-md-3 mb-3">
-
-                        <label class="form-label">
-                            Search
-                        </label>
-
+                <!-- Search and Filters -->
+                <form action="{{ route('tasks.index') }}" method="GET">
+                    <div class="filter-grid">
                         <input
                             type="text"
                             name="search"
-                            class="form-control"
-                            placeholder="Search by title..."
                             value="{{ $search }}"
+                            placeholder="Search by title..."
+                            aria-label="Search tasks"
                         >
 
-                    </div>
-
-
-                    {{-- Status --}}
-
-                    <div class="col-md-2 mb-3">
-
-                        <label class="form-label">
-                            Status
-                        </label>
-
-                        <select
-                            name="status"
-                            class="form-select"
-                        >
-
-                            <option value="">
-                                All
-                            </option>
-
-                            <option
-                                value="pending"
-                                {{ $status == 'pending' ? 'selected' : '' }}
-                            >
+                        <select name="status" aria-label="Filter by status">
+                            <option value="">All Statuses</option>
+                            <option value="pending"
+                                {{ $status == 'pending' ? 'selected' : '' }}>
                                 Pending
                             </option>
-
-                            <option
-                                value="completed"
-                                {{ $status == 'completed' ? 'selected' : '' }}
-                            >
+                            <option value="completed"
+                                {{ $status == 'completed' ? 'selected' : '' }}>
                                 Completed
                             </option>
-
                         </select>
 
-                    </div>
-
-
-                    {{-- Priority --}}
-
-                    <div class="col-md-2 mb-3">
-
-                        <label class="form-label">
-                            Priority
-                        </label>
-
-                        <select
-                            name="priority"
-                            class="form-select"
-                        >
-
-                            <option value="">
-                                All
-                            </option>
-
-                            <option
-                                value="low"
-                                {{ $priority == 'low' ? 'selected' : '' }}
-                            >
-                                Low
-                            </option>
-
-                            <option
-                                value="medium"
-                                {{ $priority == 'medium' ? 'selected' : '' }}
-                            >
-                                Medium
-                            </option>
-
-                            <option
-                                value="high"
-                                {{ $priority == 'high' ? 'selected' : '' }}
-                            >
+                        <select name="priority" aria-label="Filter by priority">
+                            <option value="">All Priorities</option>
+                            <option value="high"
+                                {{ $priority == 'high' ? 'selected' : '' }}>
                                 High
                             </option>
-
+                            <option value="medium"
+                                {{ $priority == 'medium' ? 'selected' : '' }}>
+                                Medium
+                            </option>
+                            <option value="low"
+                                {{ $priority == 'low' ? 'selected' : '' }}>
+                                Low
+                            </option>
                         </select>
 
-                    </div>
-
-
-                    {{-- Sort --}}
-
-                    <div class="col-md-3 mb-3">
-
-                        <label class="form-label">
-                            Sort By
-                        </label>
-
-                        <select
-                            name="sort"
-                            class="form-select"
-                        >
-
-                            <option
-                                value="newest"
-                                {{ $sort == 'newest' ? 'selected' : '' }}
-                            >
+                        <select name="sort" aria-label="Sort tasks">
+                            <option value="newest"
+                                {{ $sort == 'newest' ? 'selected' : '' }}>
                                 Newest First
                             </option>
-
-                            <option
-                                value="oldest"
-                                {{ $sort == 'oldest' ? 'selected' : '' }}
-                            >
+                            <option value="oldest"
+                                {{ $sort == 'oldest' ? 'selected' : '' }}>
                                 Oldest First
                             </option>
-
-                            <option
-                                value="due_date"
-                                {{ $sort == 'due_date' ? 'selected' : '' }}
-                            >
+                            <option value="due_date"
+                                {{ $sort == 'due_date' ? 'selected' : '' }}>
                                 Due Date
                             </option>
-
-                            <option
-                                value="priority"
-                                {{ $sort == 'priority' ? 'selected' : '' }}
-                            >
+                            <option value="priority"
+                                {{ $sort == 'priority' ? 'selected' : '' }}>
                                 Priority
                             </option>
-
                         </select>
-
                     </div>
 
-
-                    {{-- Filter Button --}}
-
-                    <div class="col-md-2 mb-3">
-
-                        <button
-                            type="submit"
-                            class="btn btn-primary w-100"
-                        >
-                            Apply
+                    <div class="filter-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            Search / Filter
                         </button>
 
+                        <a href="{{ route('tasks.index') }}"
+                           class="btn btn-secondary">
+                            Clear Filters
+                        </a>
                     </div>
+                </form>
 
+                <hr style="border:0; border-top:1px solid #e5e9f2; margin:22px 0;">
 
-                </div>
-
-
-                {{-- Clear Filters --}}
-
-                <a
-                    href="{{ route('tasks.index') }}"
-                    class="text-decoration-none"
-                >
-                    Clear Filters
-                </a>
-
-
-            </form>
-
-
-        </div>
-
-
-    </div>
-
-
-    {{-- Task List --}}
-
-    <div class="card shadow-sm border-0">
-
-
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-
-            <h5 class="mb-0">
-                My Tasks
-            </h5>
-
-
-            <span class="badge bg-primary">
-                {{ $tasks->total() }} Tasks
-            </span>
-
-
-        </div>
-
-
-        <div class="card-body">
-
-
-            @if ($tasks->count() > 0)
-
-
-                @foreach ($tasks as $task)
-
-
-                    <div class="card mb-3 border-0 shadow-sm">
-
-
-                        <div class="card-body">
-
-
-                            {{-- Task Header --}}
-
-                            <div class="d-flex justify-content-between align-items-start">
-
-
-                                <div>
-
-                                    <h5 class="fw-bold mb-2">
-                                        {{ $task->title }}
-                                    </h5>
-
-
-                                    @if ($task->description)
-
-                                        <p class="text-muted mb-3">
-                                            {{ $task->description }}
-                                        </p>
-
-                                    @endif
-
-
-                                </div>
-
-
-                                {{-- Status Badge --}}
-
-                                @if ($task->status === 'completed')
-
-                                    <span class="badge bg-success">
-                                        Completed
-                                    </span>
-
-                                @else
-
-                                    <span class="badge bg-warning text-dark">
-                                        Pending
-                                    </span>
-
-                                @endif
-
-
-                            </div>
-
-
-                            {{-- Priority and Due Date --}}
-
-                            <div class="mb-3">
-
-
-                                {{-- Priority Badge --}}
-
-                                @if ($task->priority === 'high')
-
-                                    <span class="badge bg-danger me-2">
-                                        High Priority
-                                    </span>
-
-                                @elseif ($task->priority === 'medium')
-
-                                    <span class="badge bg-warning text-dark me-2">
-                                        Medium Priority
-                                    </span>
-
-                                @else
-
-                                    <span class="badge bg-secondary me-2">
-                                        Low Priority
-                                    </span>
-
-                                @endif
-
-
-                                {{-- Due Date Status --}}
-
-                                @if ($task->due_date)
-
-
-                                    @if (
-                                        \Carbon\Carbon::parse($task->due_date)->isPast()
-                                        && $task->status !== 'completed'
-                                    )
-
-                                        <span class="badge bg-danger">
-                                            ⚠ Overdue
-                                        </span>
-
-                                        <span class="text-danger ms-2">
-                                            📅 {{ $task->due_date }}
-                                        </span>
-
-
-                                    @elseif (
-                                        \Carbon\Carbon::parse($task->due_date)->isToday()
-                                        && $task->status !== 'completed'
-                                    )
-
-                                        <span class="badge bg-warning text-dark">
-                                            ⚠ Due Today
-                                        </span>
-
-                                        <span class="text-warning ms-2">
-                                            📅 {{ $task->due_date }}
-                                        </span>
-
-
-                                    @elseif ($task->status === 'completed')
-
-                                        <span class="text-muted">
-                                            📅 Due: {{ $task->due_date }}
-                                        </span>
-
-
-                                    @else
-
-                                        <span class="badge bg-info text-dark">
-                                            Upcoming
-                                        </span>
-
-                                        <span class="text-muted ms-2">
-                                            📅 {{ $task->due_date }}
-                                        </span>
-
-                                    @endif
-
-
-                                @endif
-
-
-                            </div>
-
-
-                            {{-- Action Buttons --}}
-
+                @forelse ($tasks as $task)
+                    <article class="task-card">
+                        <div class="task-top">
                             <div>
+                                <h3 class="task-title">
+                                    {{ $task->title }}
+                                </h3>
 
-
-                                {{-- Complete Button --}}
-
-                                @if ($task->status !== 'completed')
-
-
-                                    <form
-                                        action="{{ route('tasks.complete', $task) }}"
-                                        method="POST"
-                                        class="d-inline"
-                                    >
-
-                                        @csrf
-
-                                        @method('PATCH')
-
-
-                                        <button
-                                            type="submit"
-                                            class="btn btn-success btn-sm"
-                                        >
-                                            ✓ Complete
-                                        </button>
-
-
-                                    </form>
-
-
+                                @if ($task->description)
+                                    <p class="task-description">
+                                        {{ $task->description }}
+                                    </p>
                                 @endif
-
-
-                                {{-- Edit Button --}}
-
-                                <a
-                                    href="{{ route('tasks.edit', $task) }}"
-                                    class="btn btn-outline-primary btn-sm"
-                                >
-                                    ✎ Edit
-                                </a>
-
-
-                                {{-- Delete Button --}}
-
-                                <form
-                                    action="{{ route('tasks.destroy', $task) }}"
-                                    method="POST"
-                                    class="d-inline"
-                                    onsubmit="return confirm('Are you sure you want to delete this task?');"
-                                >
-
-                                    @csrf
-
-                                    @method('DELETE')
-
-
-                                    <button
-                                        type="submit"
-                                        class="btn btn-outline-danger btn-sm"
-                                    >
-                                        🗑 Delete
-                                    </button>
-
-
-                                </form>
-
-
                             </div>
-
-
                         </div>
 
+                        <div class="task-meta">
+                            <span class="badge status-{{ $task->status }}">
+                                {{ ucfirst($task->status) }}
+                            </span>
 
+                            <span class="badge priority-{{ $task->priority }}">
+                                {{ ucfirst($task->priority) }} Priority
+                            </span>
+
+                            <span class="badge">
+                                Category:
+                                {{ $task->category ? $task->category->name : 'Uncategorized' }}
+                            </span>
+
+                            @if ($task->due_date)
+                                <span class="badge">
+                                    Due: {{ \Carbon\Carbon::parse($task->due_date)->format('d M Y') }}
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="task-actions">
+                            <a href="{{ route('tasks.edit', $task) }}"
+                               class="btn btn-secondary">
+                                Edit
+                            </a>
+
+                            @if ($task->status !== 'completed')
+                                <form action="{{ route('tasks.complete', $task) }}"
+                                      method="POST">
+                                    @csrf
+
+                                    <button type="submit" class="btn btn-success">
+                                        Mark Complete
+                                    </button>
+                                </form>
+                            @endif
+
+                            <form action="{{ route('tasks.destroy', $task) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Are you sure you want to delete this task?');">
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit" class="btn btn-danger">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                @empty
+                    <div class="empty-state">
+                        <h3>No tasks found</h3>
+                        <p>Add a new task or change your search filters.</p>
                     </div>
+                @endforelse
 
-
-                @endforeach
-
-
-                {{-- Pagination --}}
-
-                <div class="mt-4">
-
-                    {{ $tasks->withQueryString()->links() }}
-
+                <div class="pagination">
+                    {{ $tasks->links() }}
                 </div>
-
-
-            @else
-
-
-                {{-- No Tasks --}}
-
-                <div class="text-center py-5">
-
-                    <div class="fs-1 mb-3">
-                        📋
-                    </div>
-
-                    <h5 class="text-muted">
-                        No tasks found
-                    </h5>
-
-                    <p class="text-muted">
-                        Create a new task or change your filters.
-                    </p>
-
-                </div>
-
-
-            @endif
-
+            </section>
 
         </div>
-
-
-    </div>
-
-
-</div>
-
-
-{{-- Bootstrap JavaScript --}}
-
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
-
+    </main>
 
 </body>
-
 </html>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,5 +31,23 @@ Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])
 Route::patch('/tasks/{task}/complete', [TaskController::class, 'complete'])
     ->name('tasks.complete');
 
+    Route::middleware('auth')->group(function () {
+
+    Route::get('/profile', [
+        ProfileController::class,
+        'edit'
+    ])->name('profile.edit');
+
+    Route::patch('/profile', [
+        ProfileController::class,
+        'update'
+    ])->name('profile.update');
+
+    Route::delete('/profile', [
+        ProfileController::class,
+        'destroy'
+    ])->name('profile.destroy');
+
+});
 
 require __DIR__.'/auth.php';

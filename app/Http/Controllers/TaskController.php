@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,318 +14,166 @@ class TaskController extends Controller
      */
     public function index()
     {
-        // Get the logged-in user's ID
         $userId = Auth::id();
 
+        // Dashboard statistics
+        $totalTasks = Task::where('user_id', $userId)->count();
 
-        // Dashboard Statistics
+        $pendingTasks = Task::where('user_id', $userId)
+            ->where('status', 'pending')
+            ->count();
 
-        $totalTasks = Task::where(
-            'user_id',
-            $userId
-        )->count();
+        $completedTasks = Task::where('user_id', $userId)
+            ->where('status', 'completed')
+            ->count();
 
-        $pendingTasks = Task::where(
-            'user_id',
-            $userId
-        )->where(
-            'status',
-            'pending'
-        )->count();
+        $highPriorityTasks = Task::where('user_id', $userId)
+            ->where('priority', 'high')
+            ->count();
 
-        $completedTasks = Task::where(
-            'user_id',
-            $userId
-        )->where(
-            'status',
-            'completed'
-        )->count();
-
-        $highPriorityTasks = Task::where(
-            'user_id',
-            $userId
-        )->where(
-            'priority',
-            'high'
-        )->count();
-
-
-        // Search and Filters
-
+        // Search and filters
         $search = request('search');
-
         $status = request('status');
-
         $priority = request('priority');
-
         $sort = request('sort', 'newest');
 
-
-        // Create Query
-        // Only get tasks belonging to the logged-in user
-
-        $query = Task::where(
-            'user_id',
-            $userId
-        );
-
-
-        // Search by title
+        // Retrieve only the logged-in user's tasks
+        $query = Task::where('user_id', $userId);
 
         if ($search) {
-
-            $query->where(
-                'title',
-                'like',
-                '%' . $search . '%'
-            );
+            $query->where('title', 'like', '%' . $search . '%');
         }
 
-
-        // Filter by status
-
-        if ($status) {
-
-            $query->where(
-                'status',
-                $status
-            );
+        if (in_array($status, ['pending', 'completed'], true)) {
+            $query->where('status', $status);
         }
 
-
-        // Filter by priority
-
-        if ($priority) {
-
-            $query->where(
-                'priority',
-                $priority
-            );
+        if (in_array($priority, ['low', 'medium', 'high'], true)) {
+            $query->where('priority', $priority);
         }
-
 
         // Sorting
-
         switch ($sort) {
-
             case 'oldest':
-
-                $query->orderBy(
-                    'created_at',
-                    'asc'
-                );
-
+                $query->orderBy('created_at', 'asc');
                 break;
-
 
             case 'due_date':
-
-                $query->orderByRaw(
-                    'due_date IS NULL, due_date ASC'
-                );
-
+                $query->orderByRaw('due_date IS NULL, due_date ASC');
                 break;
 
-
             case 'priority':
-
                 $query->orderByRaw(
                     "FIELD(priority, 'high', 'medium', 'low')"
                 );
-
                 break;
 
-
             case 'newest':
-
             default:
-
-                $query->orderBy(
-                    'created_at',
-                    'desc'
-                );
-
+                $query->orderBy('created_at', 'desc');
                 break;
         }
 
+        // Pagination and category relationship
+        $tasks = $query->with('category')->paginate(5)->withQueryString();
 
-        // Pagination
+        // Categories for the task form
+        $categories = Category::orderBy('name')->get();
 
-        $tasks = $query->paginate(5);
-
-
-        // Send data to Blade view
-
-        return view(
-            'tasks.index',
-            compact(
-                'tasks',
-                'search',
-                'status',
-                'priority',
-                'sort',
-                'totalTasks',
-                'pendingTasks',
-                'completedTasks',
-                'highPriorityTasks'
-            )
-        );
+        return view('tasks.index', compact(
+            'tasks',
+            'search',
+            'status',
+            'priority',
+            'sort',
+            'totalTasks',
+            'pendingTasks',
+            'completedTasks',
+            'highPriorityTasks',
+            'categories'
+        ));
     }
-
 
     /**
      * Store a newly created task.
      */
-    public function store()
+    public function store(Request $request)
     {
-        // Validate the task data
-
-        $validated = request()->validate([
-
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
-
             'description' => 'nullable|string',
-
+            'category_id' => 'nullable|exists:categories,id',
             'priority' => 'required|in:low,medium,high',
-
             'due_date' => 'nullable|date|after_or_equal:today',
-
         ]);
 
-
-        // New tasks are pending by default
-
         $validated['status'] = 'pending';
-
-
-        // Attach the logged-in user to the task
-
         $validated['user_id'] = Auth::id();
-
-
-        // Create the task
 
         Task::create($validated);
 
-
-        return redirect('/tasks')
-            ->with(
-                'success',
-                'Task created successfully!'
-            );
+        return redirect()->route('tasks.index')
+            ->with('success', 'Task created successfully!');
     }
-
 
     /**
      * Show the form for editing a task.
      */
     public function edit(Task $task)
     {
-        // Check whether the task belongs to the logged-in user
+        abort_unless($task->user_id === Auth::id(), 403);
 
-        if ($task->user_id !== Auth::id()) {
-            abort(403);
-        }
+        $categories = Category::orderBy('name')->get();
 
-
-        return view(
-            'tasks.edit',
-            compact('task')
-        );
+        return view('tasks.edit', compact('task', 'categories'));
     }
-
 
     /**
      * Update the specified task.
      */
-    public function update(
-        Request $request,
-        Task $task
-    ) {
-
-        // Check whether the task belongs to the logged-in user
-
-        if ($task->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-
-        // Validate the task data
+    public function update(Request $request, Task $task)
+    {
+        abort_unless($task->user_id === Auth::id(), 403);
 
         $validated = $request->validate([
-
             'title' => 'required|string|max:255',
-
             'description' => 'nullable|string',
-
+            'category_id' => 'nullable|exists:categories,id',
             'priority' => 'required|in:low,medium,high',
-
             'due_date' => 'nullable|date|after_or_equal:today',
-
         ]);
-
-
-        // Update the task
 
         $task->update($validated);
 
-
-        return redirect('/tasks')
-            ->with(
-                'success',
-                'Task updated successfully!'
-            );
+        return redirect()->route('tasks.index')
+            ->with('success', 'Task updated successfully!');
     }
-
 
     /**
      * Delete the specified task.
      */
     public function destroy(Task $task)
     {
-        // Check whether the task belongs to the logged-in user
-
-        if ($task->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-
-        // Delete the task
+        abort_unless($task->user_id === Auth::id(), 403);
 
         $task->delete();
 
-
-        return redirect('/tasks')
-            ->with(
-                'success',
-                'Task deleted successfully!'
-            );
+        return redirect()->route('tasks.index')
+            ->with('success', 'Task deleted successfully!');
     }
 
-
     /**
-     * Mark the specified task as completed.
+     * Mark a task as completed.
      */
     public function complete(Task $task)
     {
-        // Check whether the task belongs to the logged-in user
-
-        if ($task->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-
-        // Mark the task as completed
+        abort_unless($task->user_id === Auth::id(), 403);
 
         $task->update([
             'status' => 'completed',
         ]);
 
-
-        return redirect('/tasks')
-            ->with(
-                'success',
-                'Task completed successfully!'
-            );
+        return redirect()->route('tasks.index')
+            ->with('success', 'Task completed successfully!');
     }
 }
